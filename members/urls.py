@@ -1,7 +1,8 @@
-from django.urls import path, include
+from django.urls import path
 
-from .views import signup
+from .views import signup, register
 
 urlpatterns = [
     path('signup', signup),
+    path('register', register)
 ]
