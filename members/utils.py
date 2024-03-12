@@ -29,3 +29,19 @@ def need_registeration(view: Callable[[HttpRequest, Member], JsonResponse]) -> C
         return view(request, query[0])
 
     return wrapper
+
+
+def handle_error_for_chatbot(error_response: JsonResponse) -> Callable[[Callable[[HttpRequest], JsonResponse]], Callable[[HttpRequest], JsonResponse]]:
+
+    def handle_error_for_chatbot_internal(view: Callable[[HttpRequest], JsonResponse]) -> Callable[[HttpRequest], JsonResponse]:
+        def wrapper(request: HttpRequest):
+            try:
+                return view(request)
+            except:
+                # need logging
+                return error_response
+        
+        return wrapper
+    
+
+    return handle_error_for_chatbot_internal

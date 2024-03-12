@@ -4,7 +4,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoAlertPresentException
 
-def login(student_id, password) -> webdriver.Chrome:
+def login(student_id, password) -> webdriver.Remote:
     options = webdriver.ChromeOptions()
     options.add_argument('--headless')
     options.set_capability('browserName', 'chrome')
@@ -63,7 +63,14 @@ def get_history(student_id: str, password: str) -> None:
     return history_list
     
 
-def apply(student_id: str, password: str) -> None:
+def apply(student_id: str, password: str, start_date: date, end_date: date) -> None:
     driver = login(student_id, password)
+    driver.get('https://gonzaga.sogang.ac.kr/home/sub06/sub06_02.jsp')
+
+    start_date_str = start_date.strftime('%Y-%m-%d')
+    end_date_str = end_date.strftime('%Y-%m-%d')
+
+    driver.execute_script('document.getElementById("sdate").value = "2024-03-11"')
+    driver.execute_script('document.getElementById("edate").value = "2024-03-15"')
 
     driver.quit()
