@@ -1,5 +1,6 @@
 import json
 from django.http import HttpRequest, HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import Member
 from .utils import need_registeration
@@ -7,9 +8,10 @@ from .crypto import decrypt
 from .kakao_response import Blocks, Menu, TextMenuResponse
 from .runner import get_history, apply
 
-def register_view(request: HttpRequest) -> HttpRequest:
+@csrf_exempt
+def register_view(request: HttpRequest) -> HttpResponse:
     body = json.loads(request.body)
-    
+
     user_key = body['userRequest']['user']['id']
     register_key = body['action']['params']['register_key']
     
@@ -22,6 +24,7 @@ def register_view(request: HttpRequest) -> HttpRequest:
     
     return TextMenuResponse(f'카카오 계정이 등록되었습니다.\nID: {member.student_id}', Menu('외박 신청하기', Blocks.APPLY), Menu('외박 신청 조회', Blocks.GET_HISTORY))
 
+@csrf_exempt
 @need_registeration
 def get_history_view(request: HttpRequest, member: Member) -> HttpResponse:
 
@@ -30,6 +33,7 @@ def get_history_view(request: HttpRequest, member: Member) -> HttpResponse:
 
     return TextMenuResponse(history_str, Menu('외박 신청하기', Blocks.APPLY), Menu('외박 신청 조회', Blocks.GET_HISTORY))
 
+@csrf_exempt
 @need_registeration
 def apply_view(request: HttpRequest, member: Member) -> HttpResponse:
     body = json.loads(request.body)
