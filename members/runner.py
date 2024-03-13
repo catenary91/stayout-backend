@@ -3,12 +3,15 @@ from datetime import datetime, date, timedelta
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoAlertPresentException
+from stayout_backend.settings import env
+
+SELENIUM_HOST = env('SELENIUM_HOST')
 
 def login(student_id, password) -> webdriver.Remote:
     options = webdriver.ChromeOptions()
     options.add_argument('--headless')
     options.set_capability('browserName', 'chrome')
-    driver = webdriver.Remote(command_executor='http://localhost:4444', options=options)
+    driver = webdriver.Remote(command_executor=SELENIUM_HOST, options=options)
     
     driver.get('https://gonzaga.sogang.ac.kr/home/login/login.jsp')
     driver.find_element(By.ID, 'std_no').send_keys(student_id)
