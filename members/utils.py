@@ -19,7 +19,7 @@ def create_register_key() -> str:
 def need_registeration(view: Callable[[HttpRequest, Member], JsonResponse]) -> Callable[[HttpRequest], JsonResponse]:
 
     def wrapper(request: HttpRequest):
-        body = json.loads()
+        body = json.loads(request.body)
         user_key = body['userRequest']['user']['id']
         
         query = Member.objects.filter(user_key=user_key)

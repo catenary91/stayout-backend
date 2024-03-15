@@ -1,4 +1,4 @@
-from typing import Any, List
+from typing import Any, Dict, List
 from django.http import JsonResponse
 
 class Blocks:
@@ -7,7 +7,7 @@ class Blocks:
     SIGNUP = '65ed71f90a73415ce06b059d'
     GET_HISTORY = '65ee901363f48f2b338525cc'
     
-def Menu(label: str, block_id: str, message_text: str = ''):
+def Menu(label: str, block_id: str, message_text: str = '') -> Dict[str, str]:
     if message_text == '':
         message_text = label
         
@@ -32,7 +32,7 @@ def TextResponse(text: str) -> JsonResponse:
         }
     })
     
-def TextMenuResponse(text: str, *menu) -> JsonResponse:
+def TextMenuResponse(text: str, menu: List[Any]) -> JsonResponse:
     return JsonResponse({
         "version": "2.0",
         "template": {
@@ -43,6 +43,6 @@ def TextMenuResponse(text: str, *menu) -> JsonResponse:
                     }
                 }
             ],
-            "quickReplies": list(menu)
+            "quickReplies": menu
         }
     })

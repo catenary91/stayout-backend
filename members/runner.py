@@ -1,5 +1,6 @@
 import time
 from datetime import datetime, date, timedelta
+from typing import List, Tuple
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoAlertPresentException
@@ -20,7 +21,7 @@ def login(student_id, password) -> webdriver.Remote:
 
     return driver
 
-def validate(student_id, password):
+def validate(student_id, password) -> bool:
     driver = login(student_id, password)
     
     cnt = 0
@@ -43,7 +44,7 @@ def validate(student_id, password):
             
         time.sleep(0.05)
 
-def get_history(student_id: str, password: str) -> None:
+def get_history(student_id: str, password: str) -> List[Tuple[str, str, str]]:
     driver = login(student_id, password)
 
     s_date = (date.today() - timedelta(days=30)).strftime('%Y-%m-%d')

@@ -17,21 +17,22 @@ def register_view(request: HttpRequest) -> HttpResponse:
     
     query = Member.objects.filter(register_key=register_key)
     if not query.exists():
-        return TextMenuResponse('유효하지 않은 등록 키입니다.', Menu('다시 입력하기', Blocks.REGISTER), Menu('가입하러 가기', Blocks.SIGNUP))
+        return TextMenuResponse('유효하지 않은 등록 키입니다.', [Menu('다시 입력하기', Blocks.REGISTER), Menu('가입하러 가기', Blocks.SIGNUP)])
     
     member = query[0]
     member.user_key = user_key
+    member.save()
     
-    return TextMenuResponse(f'카카오 계정이 등록되었습니다.\nID: {member.student_id}', Menu('외박 신청하기', Blocks.APPLY), Menu('외박 신청 조회', Blocks.GET_HISTORY))
+    return TextMenuResponse(f'카카오 계정이 등록되었습니다.\nID: {member.student_id}', [Menu('외박 신청하기', Blocks.APPLY), Menu('외박 신청 조회', Blocks.GET_HISTORY)])
 
 @csrf_exempt
 @need_registeration
 def get_history_view(request: HttpRequest, member: Member) -> HttpResponse:
 
     history = get_history(member.student_id, decrypt(member.password))
-    history_str = map(lambda h: f'신청일:{h[0]}\n{h[1]} / {h[2]}', history)
-
-    return TextMenuResponse(history_str, Menu('외박 신청하기', Blocks.APPLY), Menu('외박 신청 조회', Blocks.GET_HISTORY))
+    history_str = '\n\n'.join([f'신청일:{h[0]}\n{h[1]}\n{h[2]}' for h in history])
+    
+    return TextMenuResponse(history_str, [Menu('외박 신청하기', Blocks.APPLY), Menu('외박 신청 조회', Blocks.GET_HISTORY)])
 
 @csrf_exempt
 @need_registeration
